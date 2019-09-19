@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "kapj",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -25,5 +25,5 @@
   "devDependencies": {},
   "author": "Ena",
   "license": "ISC",
-  "description": ""
+  "description": "Opis"
 }
