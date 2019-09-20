@@ -6,35 +6,35 @@ const Order = sequelize.define('order', {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false
+        //allowNull: false
     },
     name: {
         type: Sequelize.STRING,
-        allowNull: false
+        //allowNull: false
     },
     surname: {
         type: Sequelize.STRING,
-        allowNull: false
+        //allowNull: false
     },
-    order_mass: {
+    orderMass: {
         type: Sequelize.STRING,
-        allowNull: false
+        //allowNull: false
     },
-    order_volume: {
+    orderVolume: {
         type: Sequelize.STRING,
-        allowNull: false
+        //allowNull: false
     },
     address: {
         type: Sequelize.STRING,
-        allowNull: false
+        //allowNull: false
     },
     latitude: {
         type: Sequelize.REAL,
-        allowNull: false
+        //allowNull: false
     },
     longitude: {
         type: Sequelize.REAL,
-        allowNull: false
+        //allowNull: false
     }
 });
 
