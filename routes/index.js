@@ -36,9 +36,9 @@ router.get('/getAll', async function (req, res, next) {
 });
 
 router.get('/getDelivery', async function (req, res, next) {
-  const all = await database.getDeliveryRoute();
+  const deliveries = await database.getDeliveryRoute();
   res.status(200).send({
-    list: all
+    list: deliveries
   });
 });
 
