@@ -4,15 +4,14 @@ var router = express.Router();
 const database = require('../utils/database');
 
 router.post('/add', async function (req, res, next) {
-  var order = req.body.order;
 
-  var name = order.name;
-  var surname = order.surname;
-  var orderMass = order.order_mass;
-  var orderVolume = order.order_volume;
-  var address = order.address;
-  var latitude = order.latitude;
-  var longitude = order.longitude;
+  var name = req.body.name;
+  var surname = req.body.surname;
+  var orderMass = req.body.orderMass;
+  var orderVolume = req.body.orderVolume;
+  var address = req.body.address;
+  var latitude = req.body.latitude;
+  var longitude = req.body.longitude;
 
   const addOrder = await database.addOrder(
       name, surname, orderMass, orderVolume, address, latitude, longitude
@@ -32,17 +31,21 @@ router.post('/add', async function (req, res, next) {
 router.get('/getAll', async function (req, res, next) {
   const all = await database.getAllOrders();
   res.status(200).send({
-    list: all,
-    message: 'users retrieved successfully'
+    list: all
+  });
+});
+
+router.get('/getDelivery', async function (req, res, next) {
+  const all = await database.getDeliveryRoute();
+  res.status(200).send({
+    list: all
   });
 });
 
 router.delete('/delete/:id', function (req, res, next) {
   const id = parseInt(req.params.id);
 
-  delete order[id];
-
-  delayedSend(res, '');
+  database.deleteOrder(id);
 });
 
 module.exports = router;
