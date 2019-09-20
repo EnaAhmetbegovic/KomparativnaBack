@@ -45,52 +45,74 @@ const getDeliveryRoute = async function () {
         .findAll()
         .then(rows => {
             var coordinates = [];
-            var ordersCoordinates = [];
-            var length = model.Order.length;
-            var random = Math.random() * (100) + length;
-            var startingPoint = model.Order[random];
 
             rows.forEach(function (row) {
                 coordinates.push({
                     id : row.dataValues.id,
+                    name : row.dataValues.name,
+                    surname : row.dataValues.surname,
+                    orderMass : row.dataValues.orderMass,
+                    orderVolume : row.dataValues.orderVolume,
+                    address : row.dataValues.address,
                     latitude : row.dataValues.latitude,
-                    longitude : row.dataValues.longitude
+                    longitude : row.dataValues.longitude,
                 });
             });
 
-            var pomLat = 0;
-            var pomLon = 0;
+            var ordersCoordinates = [];
+            var length = coordinates.length;
+            var random = Math.floor(Math.random() * length);
+            var Distance = require('geo-distance');
 
-            // Ako je ravna ploča :P
-            for (let i = 0; i < length; i++) {
-                for (let j = 0; j < length-1; j++) {
-                    if (
-                        Math.sqrt(
-                            coordinates.longitude[i] - coordinates.longitude[j] * coordinates.longitude[i] - coordinates.longitude[j] +
-                            coordinates.latitude[i] - coordinates.latitude[j] * coordinates.latitude[i] - coordinates.latitude[j]
-                        ) >
-                        Math.sqrt(
-                            coordinates.longitude[i] - coordinates.longitude[j+1] * coordinates.longitude[i] - coordinates.longitude[j+1] +
-                            coordinates.latitude[i] - coordinates.latitude[j+1] * coordinates.latitude[i] - coordinates.latitude[j+1]
-                        )
-                    ) {
-                        pomLat = coordinates.latitude[j+1];
-                        pomLon = coordinates.longitude[j+1];
-                        coordinates.latitude[j+1] = coordinates.latitude[i];
-                        coordinates.longitude[j+1] = coordinates.longitude[i];
-                        coordinates.latitude[i] = coordinates.latitude[pomLat];
-                        coordinates.longitude[i] = coordinates.longitude[pomLon];
+            console.log("Length: " + length);
+            console.log("Random: " + random);
+
+            var pomCoordinates = 0;
+
+            var first = {
+                lat: 0.0,
+                lon: 0.0
+            };
+            var second = {
+                lat: 0.0,
+                lon: 0.0
+            };
+            var third = {
+                lat: 0.0,
+                lon: 0.0
+            };
+
+            for (let i = 0; i < length-1; i++) {
+                for (let j = 0; j < length-2-i; j++) {
+                    first.lat = coordinates[j].latitude;
+                    first.lon = coordinates[j].longitude;
+                    second.lat = coordinates[j+1].latitude;
+                    second.lat = coordinates[j+1].longitude;
+                    third.lat = coordinates[j+2].latitude;
+                    third.lat = coordinates[j+2].longitude;
+
+                    if (Distance.between(first, second) > Distance.between(first, third)) {
+                        pomCoordinates = coordinates[j+2];
+                        coordinates[j+2] = coordinates[j+1];
+                        coordinates[j+1] = coordinates[pomCoordinates];
                     }
                 }
             }
+            var pom = 1;
+            for (let i = random; i < (length + random); i++) {
 
-            for (let i = startingPoint-1; i < length+startingPoint; i++) {
                 ordersCoordinates.push({
-                    id : (i%coordinates.length).dataValues.id,
-                    latitude : (i%coordinates.length).dataValues.latitude,
-                    longitude : (i%coordinates.length).dataValues.longitude,
-                    route : (i%coordinates.length)+1
+                    id : coordinates[(i % length)].id,
+                    name : coordinates[(i % length)].name,
+                    surname : coordinates[(i % length)].surname,
+                    orderMass : coordinates[(i % length)].orderMass,
+                    orderVolume : coordinates[(i % length)].orderVolume,
+                    address : coordinates[(i % length)].address,
+                    latitude : coordinates[(i % length)].latitude,
+                    longitude : coordinates[(i % length)].longitude,
+                    route : pom
                 });
+                pom++;
             }
 
             return ordersCoordinates;
@@ -110,6 +132,7 @@ const deleteOrder = async function (id) {
 module.exports = {
     "addOrder": addOrder,
     "getAllOrders": getAllOrders,
+    "getDeliveryRoute": getDeliveryRoute,
     "deleteOrder": deleteOrder
 
 };
